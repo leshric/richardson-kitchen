@@ -107,6 +107,14 @@
   .note p { margin: 0; }
   ul, ol { padding-left: 1.25rem; }
   li { margin: 0.35rem 0; }
+  .shop-group { margin: 0 0 0.85rem; }
+  .shop-group h3 {
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    margin: 0 0 0.35rem;
+  }
   .shop {
     list-style: none;
     padding: 0;
@@ -139,11 +147,16 @@
     cursor: pointer;
     font-size: 1rem;
   }
+  .shop .meta {
+    display: block;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
   .shop li.is-done label {
     text-decoration: line-through;
     color: var(--muted);
   }
-  .actions { margin: 1rem 0 0.25rem; }
+  .actions { margin: 1rem 0 0.25rem; display: flex; flex-wrap: wrap; gap: 0.6rem; }
   .actions button {
     min-height: 2.75rem;
     padding: 0.55rem 1rem;
@@ -159,6 +172,27 @@
     outline: 3px solid var(--accent);
     outline-offset: 2px;
   }
+  .add-wrap { margin: 0 0 1rem; }
+  a.add-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 1rem;
+    font: 650 1.05rem/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 0.55rem;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a.add-list:hover { background: var(--accent-dark); }
+  a.add-list:focus-visible {
+    outline: 3px solid var(--accent-dark);
+    outline-offset: 2px;
+  }
+  #shop-status { margin: 0.6rem 0 0.8rem; }
   @media (min-width: 640px) {
     h1 { font-size: 1.6rem; }
     nav.tabs button { font-size: 1.05rem; padding: 0.8rem 0.6rem; }
@@ -223,27 +257,111 @@
 
   <section class="panel" role="tabpanel" id="panel-shopping" aria-labelledby="tab-shopping" hidden>
     <h2>H-E-B list (store order)</h2>
-    <p class="n">One trip, Sunday afternoon, H-E-B Cross Creek Ranch. The list follows the order you walk the store. Checks stay on this phone until you clear them.</p>
-    <ul class="shop" id="shop-list">
-      <li><input type="checkbox" id="item-apples"><label for="item-apples">Sale apples</label></li>
-      <li><input type="checkbox" id="item-bananas"><label for="item-bananas">2 bunches of bananas</label></li>
-      <li><input type="checkbox" id="item-tomato"><label for="item-tomato">Tomato (optional, for burgers)</label></li>
-      <li><input type="checkbox" id="item-sweet-potatoes"><label for="item-sweet-potatoes">Sweet potatoes, 8 lb bag (for Thursday’s casserole; roast the rest for boy sides)</label></li>
-      <li><input type="checkbox" id="item-onions"><label for="item-onions">Onions</label></li>
-      <li><input type="checkbox" id="item-butt"><label for="item-butt">About 8 lb of Boston butt (freeze half)</label></li>
-      <li><input type="checkbox" id="item-cheese"><label for="item-cheese">String cheese and sliced cheese</label></li>
-      <li><input type="checkbox" id="item-buns"><label for="item-buns">Burger buns</label></li>
-      <li><input type="checkbox" id="item-milk"><label for="item-milk">A gallon of milk</label></li>
-      <li><input type="checkbox" id="item-eggs"><label for="item-eggs">3 dozen eggs and a 32 oz carton of egg whites</label></li>
-      <li><input type="checkbox" id="item-turkey"><label for="item-turkey">A 12–14 lb frozen turkey, if the price is right (optional; freeze for later — do not thaw this week)</label></li>
-      <li><input type="checkbox" id="item-fries"><label for="item-fries">Frozen fries</label></li>
-      <li><input type="checkbox" id="item-pantry"><label for="item-pantry">Jasmine rice, syrup, and avocado oil</label></li>
-      <li><input type="checkbox" id="item-baking"><label for="item-baking">Brown sugar, pecans, and marshmallows (casserole topping: half pecan, half marshmallow)</label></li>
-      <li><input type="checkbox" id="item-water"><label for="item-water">Distilled water</label></li>
-      <li><input type="checkbox" id="item-plates"><label for="item-plates">Paper plates</label></li>
-    </ul>
+    <p class="n">One trip, Sunday afternoon, H-E-B Cross Creek Ranch. This is one combined list: the planned shop plus anything you or Lesly add. Checks stay on this phone until you clear them.</p>
+    <div class="add-wrap" id="add-list-wrap">
+      <a class="add-list" id="add-list" href="https://docs.google.com/spreadsheets/d/1cd7lbnvLoOw_ifGhLKK5jnqEfV1Qjf99qkOF5ft3d5Q/edit" target="_blank" rel="noopener">Add to list</a>
+      <p class="n" style="margin:0.6rem 0 0">You and Lesly can both add items. They show up in this list — refresh or switch back to this tab if a new add doesn’t appear right away. A Section dropdown in the sheet puts an item in the right store aisle; leave it blank and it lands under Added.</p>
+    </div>
+    <p class="n" id="shop-status" hidden></p>
+    <div id="shop-root">
+      <section class="shop-group" data-section="Prepared meals" hidden>
+        <h3>Prepared meals</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Vegetables" hidden>
+        <h3>Vegetables</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Fruit">
+        <h3>Fruit</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-apples"><label for="item-apples">Sale apples</label></li>
+          <li><input type="checkbox" id="item-bananas"><label for="item-bananas">2 bunches of bananas</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Tomatoes &amp; avocados">
+        <h3>Tomatoes &amp; avocados</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-tomato"><label for="item-tomato">Tomato (optional, for burgers)</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Salad greens" hidden>
+        <h3>Salad greens</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Potatoes &amp; onions">
+        <h3>Potatoes &amp; onions</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-sweet-potatoes"><label for="item-sweet-potatoes">Sweet potatoes, 8 lb bag (for Thursday’s casserole; roast the rest for boy sides)</label></li>
+          <li><input type="checkbox" id="item-onions"><label for="item-onions">Onions</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Meat">
+        <h3>Meat</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-butt"><label for="item-butt">About 8 lb of Boston butt (freeze half)</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Cheese &amp; deli">
+        <h3>Cheese &amp; deli</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-cheese"><label for="item-cheese">String cheese and sliced cheese</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Bread">
+        <h3>Bread</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-buns"><label for="item-buns">Burger buns</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Dairy">
+        <h3>Dairy</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-milk"><label for="item-milk">A gallon of milk</label></li>
+          <li><input type="checkbox" id="item-eggs"><label for="item-eggs">3 dozen eggs and a 32 oz carton of egg whites</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Frozen">
+        <h3>Frozen</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-turkey"><label for="item-turkey">A 12–14 lb frozen turkey, if the price is right (optional; freeze for later — do not thaw this week)</label></li>
+          <li><input type="checkbox" id="item-fries"><label for="item-fries">Frozen fries</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Pantry &amp; baking">
+        <h3>Pantry &amp; baking</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-pantry"><label for="item-pantry">Jasmine rice, syrup, and avocado oil</label></li>
+          <li><input type="checkbox" id="item-baking"><label for="item-baking">Brown sugar, pecans, and marshmallows (casserole topping: half pecan, half marshmallow)</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Paper &amp; household">
+        <h3>Paper &amp; household</h3>
+        <ul class="shop">
+          <li><input type="checkbox" id="item-water"><label for="item-water">Distilled water</label></li>
+          <li><input type="checkbox" id="item-plates"><label for="item-plates">Paper plates</label></li>
+        </ul>
+      </section>
+      <section class="shop-group" data-section="Personal care" hidden>
+        <h3>Personal care</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Healthy living" hidden>
+        <h3>Healthy living</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Other" hidden>
+        <h3>Other</h3>
+        <ul class="shop"></ul>
+      </section>
+      <section class="shop-group" data-section="Added" hidden>
+        <h3>Added</h3>
+        <ul class="shop"></ul>
+      </section>
+    </div>
     <div class="actions">
       <button type="button" id="clear-checks">Clear checks</button>
+      <button type="button" id="refresh-adds">Refresh adds</button>
     </div>
     <p class="n">You already have yogurt, cottage cheese, butter, regular potatoes, broccoli, and an avocado at home. The optional turkey goes straight to the outside freezer.</p>
   </section>
@@ -281,12 +399,66 @@
 
 <script>
 (function () {
+  var SHARED_LIST_URL = "https://docs.google.com/spreadsheets/d/1cd7lbnvLoOw_ifGhLKK5jnqEfV1Qjf99qkOF5ft3d5Q/edit";
+  var SHARED_LIST_ID = "1cd7lbnvLoOw_ifGhLKK5jnqEfV1Qjf99qkOF5ft3d5Q";
+  var SHARED_LIST_SHEET = "Adds";
+  var SHARED_LIST_GID = "1861992233";
   var TAB_KEY = "rk-tab";
   var CHECK_KEY = "rk-shop-2026-11-22";
   var ids = ["menu", "shopping", "prep"];
   var alias = { shop: "shopping", list: "shopping", recipes: "prep", "prep-recipes": "prep" };
   var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
-  var list = document.getElementById("shop-list");
+  var shopRoot = document.getElementById("shop-root");
+  var statusEl = document.getElementById("shop-status");
+  var addLink = document.getElementById("add-list");
+  if (SHARED_LIST_URL) addLink.href = SHARED_LIST_URL;
+
+  var SECTION_ALIASES = {
+    "prepared meals": "Prepared meals",
+    "prepared": "Prepared meals",
+    "vegetables": "Vegetables",
+    "veg": "Vegetables",
+    "produce": "Vegetables",
+    "fruit": "Fruit",
+    "fruits": "Fruit",
+    "bananas": "Fruit",
+    "tomatoes & avocados": "Tomatoes & avocados",
+    "tomatoes and avocados": "Tomatoes & avocados",
+    "tomato": "Tomatoes & avocados",
+    "avocados": "Tomatoes & avocados",
+    "salad greens": "Salad greens",
+    "salad": "Salad greens",
+    "lettuce": "Salad greens",
+    "potatoes & onions": "Potatoes & onions",
+    "potatoes and onions": "Potatoes & onions",
+    "potatoes": "Potatoes & onions",
+    "onions": "Potatoes & onions",
+    "meat": "Meat",
+    "butcher": "Meat",
+    "cheese & deli": "Cheese & deli",
+    "cheese and deli": "Cheese & deli",
+    "cheese": "Cheese & deli",
+    "deli": "Cheese & deli",
+    "bread": "Bread",
+    "breads": "Bread",
+    "buns": "Bread",
+    "dairy": "Dairy",
+    "eggs": "Dairy",
+    "milk": "Dairy",
+    "frozen": "Frozen",
+    "pantry & baking": "Pantry & baking",
+    "pantry and baking": "Pantry & baking",
+    "pantry": "Pantry & baking",
+    "baking": "Pantry & baking",
+    "paper & household": "Paper & household",
+    "paper and household": "Paper & household",
+    "paper": "Paper & household",
+    "household": "Paper & household",
+    "personal care": "Personal care",
+    "healthy living": "Healthy living",
+    "other": "Other",
+    "added": "Added"
+  };
 
   function valid(tab) {
     return ids.indexOf(tab) !== -1 ? tab : null;
@@ -314,6 +486,7 @@
       var hash = "#" + tab;
       if (location.hash !== hash) history.replaceState(null, "", hash);
     }
+    if (tab === "shopping") loadAdds();
   }
   function start() {
     var saved = null;
@@ -342,14 +515,14 @@
   });
 
   function applyChecks(idsChecked) {
-    list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+    shopRoot.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
       cb.checked = idsChecked.indexOf(cb.id) !== -1;
       cb.closest("li").classList.toggle("is-done", cb.checked);
     });
   }
   function saveChecks() {
     var checked = [];
-    list.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+    shopRoot.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
       checked.push(cb.id);
     });
     try { localStorage.setItem(CHECK_KEY, JSON.stringify(checked)); } catch (e) {}
@@ -360,7 +533,7 @@
     if (!Array.isArray(checked)) checked = [];
     applyChecks(checked);
   }
-  list.addEventListener("change", function (e) {
+  shopRoot.addEventListener("change", function (e) {
     if (e.target && e.target.type === "checkbox") {
       e.target.closest("li").classList.toggle("is-done", e.target.checked);
       saveChecks();
@@ -370,9 +543,216 @@
     applyChecks([]);
     saveChecks();
   });
+  document.getElementById("refresh-adds").addEventListener("click", function () {
+    loadAdds(true);
+  });
+
+  function setStatus(msg) {
+    if (!msg) {
+      statusEl.hidden = true;
+      statusEl.textContent = "";
+      return;
+    }
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+  }
+
+  function slug(text) {
+    return String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "item";
+  }
+  function norm(text) {
+    return String(text || "").toLowerCase().replace(/&amp;/g, "&").replace(/[^a-z0-9]+/g, " ").trim();
+  }
+  function resolveSection(name) {
+    var key = String(name || "").replace(/&amp;/g, "&").trim().toLowerCase();
+    if (!key) return "Added";
+    return SECTION_ALIASES[key] || "Added";
+  }
+  function groupFor(section) {
+    var groups = shopRoot.querySelectorAll(".shop-group");
+    for (var i = 0; i < groups.length; i++) {
+      if (groups[i].getAttribute("data-section") === section) return groups[i];
+    }
+    return shopRoot.querySelector('[data-section="Added"]');
+  }
+  function hideEmptyDynamicGroups() {
+    shopRoot.querySelectorAll(".shop-group").forEach(function (group) {
+      var planned = group.querySelectorAll("li:not(.is-added)");
+      var added = group.querySelectorAll("li.is-added");
+      if (planned.length === 0 && added.length === 0) group.hidden = true;
+      else group.hidden = false;
+    });
+  }
+  function plannedLabels() {
+    var out = {};
+    shopRoot.querySelectorAll("li:not(.is-added) label").forEach(function (lab) {
+      out[norm(lab.textContent)] = true;
+    });
+    return out;
+  }
+
+  function parseCsv(text) {
+    var rows = [], row = [], cell = "", i = 0, q = false;
+    text = String(text).replace(/^\uFEFF/, "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    while (i < text.length) {
+      var ch = text.charAt(i);
+      if (q) {
+        if (ch === '"') {
+          if (text.charAt(i + 1) === '"') { cell += '"'; i += 2; continue; }
+          q = false; i++; continue;
+        }
+        cell += ch; i++; continue;
+      }
+      if (ch === '"') { q = true; i++; continue; }
+      if (ch === ",") { row.push(cell); cell = ""; i++; continue; }
+      if (ch === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; i++; continue; }
+      cell += ch; i++;
+    }
+    if (cell.length || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+
+  function colMap(header) {
+    var map = {};
+    header.forEach(function (name, i) {
+      var key = norm(name);
+      if (key === "item" || key === "items") map.item = i;
+      else if (key === "added by" || key === "addedby" || key === "who") map.by = i;
+      else if (key === "store notes" || key === "storenotes" || key === "notes" || key === "store") map.notes = i;
+      else if (key === "section" || key === "aisle") map.section = i;
+    });
+    return map;
+  }
+
+  function rowsFromGviz(data) {
+    var cols = (data && data.table && data.table.cols) || [];
+    var headers = cols.map(function (c) { return String((c && (c.label || c.id)) || "").trim(); });
+    var rows = [headers];
+    ((data.table && data.table.rows) || []).forEach(function (r) {
+      rows.push(((r && r.c) || []).map(function (c) {
+        if (!c) return "";
+        if (c.f != null && c.f !== "") return String(c.f);
+        if (c.v != null) return String(c.v);
+        return "";
+      }));
+    });
+    return rows;
+  }
+
+  function fetchViaJsonp() {
+    return new Promise(function (resolve, reject) {
+      var cb = "__rkSheet" + Date.now();
+      var s = document.createElement("script");
+      var timer = setTimeout(function () { cleanup(); reject(new Error("timeout")); }, 8000);
+      function cleanup() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+      }
+      window[cb] = function (data) { cleanup(); resolve(rowsFromGviz(data)); };
+      s.onerror = function () { cleanup(); reject(new Error("script")); };
+      s.src = "https://docs.google.com/spreadsheets/d/" + SHARED_LIST_ID +
+        "/gviz/tq?tqx=out:json;responseHandler:" + cb +
+        "&sheet=" + encodeURIComponent(SHARED_LIST_SHEET) +
+        "&t=" + Date.now();
+      document.head.appendChild(s);
+    });
+  }
+
+  function fetchAdds() {
+    var urls = [
+      "https://docs.google.com/spreadsheets/d/" + SHARED_LIST_ID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHARED_LIST_SHEET) + "&t=" + Date.now(),
+      "https://docs.google.com/spreadsheets/d/" + SHARED_LIST_ID + "/export?format=csv&gid=" + SHARED_LIST_GID + "&t=" + Date.now()
+    ];
+    function tryUrl(i) {
+      if (i >= urls.length) return fetchViaJsonp();
+      return fetch(urls[i], { cache: "no-store" }).then(function (res) {
+        if (!res.ok) throw new Error("http " + res.status);
+        return res.text();
+      }).then(function (text) {
+        if (!text || /^\s*</.test(text)) throw new Error("html");
+        var rows = parseCsv(text);
+        if (!rows.length || !rows[0] || rows[0].join("").toLowerCase().indexOf("item") === -1) throw new Error("no header");
+        return rows;
+      }).catch(function () { return tryUrl(i + 1); });
+    }
+    return tryUrl(0);
+  }
+
+  function renderAdds(rows) {
+    shopRoot.querySelectorAll("li.is-added").forEach(function (li) { li.remove(); });
+    if (!rows || !rows.length) {
+      hideEmptyDynamicGroups();
+      return 0;
+    }
+    var map = colMap(rows[0]);
+    if (map.item == null) {
+      hideEmptyDynamicGroups();
+      return 0;
+    }
+    var seen = plannedLabels();
+    var count = 0;
+    for (var r = 1; r < rows.length; r++) {
+      var line = rows[r] || [];
+      var item = String(line[map.item] || "").trim();
+      if (!item) continue;
+      var key = norm(item);
+      if (seen[key]) continue;
+      seen[key] = true;
+      var by = map.by != null ? String(line[map.by] || "").trim() : "";
+      var notes = map.notes != null ? String(line[map.notes] || "").trim() : "";
+      var section = resolveSection(map.section != null ? line[map.section] : "");
+      var group = groupFor(section);
+      var list = group.querySelector("ul.shop");
+      var id = "item-added-" + slug(item);
+      if (document.getElementById(id)) id = id + "-" + r;
+      var li = document.createElement("li");
+      li.className = "is-added";
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.id = id;
+      var lab = document.createElement("label");
+      lab.setAttribute("for", id);
+      lab.appendChild(document.createTextNode(item));
+      if (by || notes) {
+        var meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = [by, notes].filter(Boolean).join(" · ");
+        lab.appendChild(meta);
+      }
+      li.appendChild(cb);
+      li.appendChild(lab);
+      list.appendChild(li);
+      group.hidden = false;
+      count++;
+    }
+    hideEmptyDynamicGroups();
+    return count;
+  }
+
+  var addsLoading = false;
+  function loadAdds(manual) {
+    if (addsLoading) return;
+    addsLoading = true;
+    if (manual) setStatus("Loading adds…");
+    fetchAdds().then(function (rows) {
+      var n = renderAdds(rows);
+      loadChecks();
+      if (n) setStatus(null);
+      else if (manual) setStatus("No extra adds in the sheet right now. The planned list is below.");
+      else setStatus(null);
+    }).catch(function () {
+      shopRoot.querySelectorAll("li.is-added").forEach(function (li) { li.remove(); });
+      hideEmptyDynamicGroups();
+      loadChecks();
+      setStatus("Couldn’t load new adds right now. The planned list is below. Try Refresh adds, or open Add to list.");
+    }).then(function () { addsLoading = false; });
+  }
 
   loadChecks();
+  hideEmptyDynamicGroups();
   start();
+  loadAdds();
 })();
 </script>
 </body>
