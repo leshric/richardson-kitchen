@@ -2,73 +2,378 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#cc6600">
 <title>Richardson Kitchen: Nov 22–28</title>
 <style>
-body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.45;color:#222}
-h1{font-size:1.5rem}
-h2{border-bottom:2px solid #c60;padding-bottom:4px;margin-top:1.6em}
-li{margin:4px 0}
-.n{color:#666;font-size:.9rem}
+  :root {
+    --accent: #c60;
+    --accent-dark: #a35000;
+    --bg: #f7f3ee;
+    --card: #fff;
+    --text: #222;
+    --muted: #5c5c5c;
+    --line: #e6ddd4;
+    --max: 40rem;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: var(--max); margin: 0 auto; }
+  header { padding: 1rem 1rem 0.75rem; }
+  h1 {
+    font-size: 1.35rem;
+    line-height: 1.3;
+    margin: 0 0 0.5rem;
+  }
+  .n { color: var(--muted); }
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    gap: 0;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
+  nav.tabs button {
+    flex: 1 1 0;
+    min-height: 3rem;
+    padding: 0.7rem 0.4rem;
+    margin: 0;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: var(--card);
+    color: var(--muted);
+    font: 650 1rem/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  nav.tabs button[aria-selected="true"] {
+    color: var(--accent-dark);
+    border-bottom-color: var(--accent);
+  }
+  nav.tabs button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: -3px;
+  }
+  .panel {
+    display: none;
+    padding: 1rem 1rem 3rem;
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  }
+  .panel.is-on { display: block; }
+  h2 {
+    font-size: 1.15rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.25rem;
+    margin: 1.4rem 0 0.7rem;
+  }
+  .panel > h2:first-child { margin-top: 0.15rem; }
+  .day {
+    background: var(--card);
+    border-radius: 0.7rem;
+    padding: 0.9rem 1rem;
+    margin: 0 0 0.7rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .day h3 {
+    margin: 0 0 0.3rem;
+    font-size: 1.05rem;
+    color: var(--accent-dark);
+  }
+  .day p { margin: 0; }
+  .note {
+    background: var(--card);
+    border-radius: 0.7rem;
+    padding: 0.9rem 1rem;
+    margin: 0.7rem 0 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .note p { margin: 0; }
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: 0.35rem 0; }
+  .shop {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: var(--card);
+    border-radius: 0.7rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+  .shop li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    min-height: 3rem;
+  }
+  .shop li:last-child { border-bottom: 0; }
+  .shop input[type="checkbox"] {
+    width: 1.5rem;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    margin: 0.15rem 0 0;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+  .shop label {
+    flex: 1;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .shop li.is-done label {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .actions { margin: 1rem 0 0.25rem; }
+  .actions button {
+    min-height: 2.75rem;
+    padding: 0.55rem 1rem;
+    font: 600 1rem/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid #c9c0b6;
+    border-radius: 0.55rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .actions button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (min-width: 640px) {
+    h1 { font-size: 1.6rem; }
+    nav.tabs button { font-size: 1.05rem; padding: 0.8rem 0.6rem; }
+  }
 </style>
 </head>
 <body>
-<h1>Richardson Kitchen: Week of Nov 22–28, 2026</h1>
-<p class="n">Last updated Sun Nov 22, 2026 (Central Time). Adults: low-carb, protein-forward. Boys: same meals plus carb sides. Mitchell: no ground or processed meat, and no deli. Kids are home this week, so lunches are at home. Lesh: packed lunch on Tuesday. Shop: H-E-B Cross Creek Ranch, Sunday afternoon, one store.</p>
+<div class="wrap">
+  <header>
+    <h1>Richardson Kitchen: Week of Nov 22–28, 2026</h1>
+    <p class="n">Last updated Sun Nov 22, 2026 (Central Time). Adults: low-carb, protein-forward. Boys: same meals plus carb sides. Mitchell: no ground or processed meat, and no deli. Kids are home this week, so lunches are at home. Lesh: packed lunch on Tuesday. Shop: H-E-B Cross Creek Ranch, Sunday afternoon, one store.</p>
+  </header>
 
-<h2>Menu</h2>
-<ul>
-<li><b>Sun:</b> Lunch: turkey and cheddar roll-ups (use the deli turkey today or Monday). Mitchell: leftover Saturday chicken-and-rice, not deli. Dinner: baked chicken and broccoli; rice or potatoes for the boys. After shopping: Boston butt in the slow cooker overnight.</li>
-<li><b>Mon (early dinner):</b> Finish the deli turkey at lunch (Mitchell: leftover chicken). Dinner by 5:30: pulled pork bowls with veg; rice or potatoes for the boys. Freeze half the pork.</li>
-<li><b>Tue:</b> Lesh packed lunch (pork or chicken, veg, fruit, a boiled egg). Dinner: prime sirloin on the Blackstone with veg; potatoes or rice for the boys. Defrost the steak the same day in cold water.</li>
-<li><b>Wed (leftover night):</b> Leftover chicken and pork with veg. Evening: make the sweet potato casserole, and roast the rest of the sweet potatoes for boy sides.</li>
-<li><b>Thu – Thanksgiving:</b> Light breakfast and a light lunch at home. Dinner at the parents' house; they cook most of the food. Bring the sweet potato casserole (reheat at 350°F for 20–25 minutes).</li>
-<li><b>Fri:</b> Dinner from leftovers brought home from the parents' house. Backup: reheated pulled pork and frozen veg (boys can add rice or mac and cheese). If that's short, chicken patties; Mitchell gets leftover pork or a chicken breast.</li>
-<li><b>Sat:</b> Filet night (all 8 filets). Same-day cold-water defrost. Veg for the adults, oven fries for the boys.</li>
-</ul>
-<p><b>Breakfast:</b> eggs and egg whites, Greek yogurt with berries, cottage cheese, or protein pancakes. Kodiak tip: mix half Kodiak and half all-purpose flour, then add a spoon of sugar, vanilla, a pinch of salt, milk, an egg, and a little melted butter. <b>Snacks:</b> string cheese, yogurt, cottage cheese, fruit with peanut butter, hard-boiled eggs, protein bars.</p>
+  <nav class="tabs" role="tablist" aria-label="Meal plan sections">
+    <button type="button" role="tab" id="tab-menu" data-tab="menu" aria-controls="panel-menu" aria-selected="true">Menu</button>
+    <button type="button" role="tab" id="tab-shopping" data-tab="shopping" aria-controls="panel-shopping" aria-selected="false">Shopping List</button>
+    <button type="button" role="tab" id="tab-prep" data-tab="prep" aria-controls="panel-prep" aria-selected="false">Prep &amp; Recipes</button>
+  </nav>
 
-<h2>Sweet potato casserole (Wednesday evening)</h2>
-<p>Filling: 4–5 lb sweet potatoes, baked or boiled until soft and mashed, plus 4 Tbsp melted butter, ⅓ cup brown sugar, ¼ cup milk, 2 beaten eggs, 1 tsp vanilla, ½ tsp cinnamon, and a pinch of salt. Spread in a buttered 9×13. Topping: ½ cup chopped pecans, ⅓ cup flour, ⅓ cup brown sugar, and 3 Tbsp cold butter, mixed to crumbs. Bake at 350°F for 25–30 minutes until golden. Cool, cover, and refrigerate. Thursday: reheat at 350°F for 20–25 minutes. Roast the rest of the 8 lb bag for boy sides.</p>
+  <section class="panel is-on" role="tabpanel" id="panel-menu" aria-labelledby="tab-menu">
+    <h2>This week’s menu</h2>
 
-<h2>Meal prep (Sunday evening)</h2>
-<ul>
-<li>Slow-cook the Boston butt overnight (ready by 5:30 Monday)</li>
-<li>Bake 3–4 lb chicken breasts at 425°F for lunches and Sunday dinner</li>
-<li>Roast the broccoli heads with the chicken</li>
-<li>Hard-boil a dozen eggs</li>
-<li>Cut fruit, portion cottage cheese, stock a snack bin</li>
-<li>Wednesday night: make the sweet potato casserole; roast leftover sweet potatoes</li>
-</ul>
+    <article class="day">
+      <h3>Sunday</h3>
+      <p>Lunch: turkey and cheddar roll-ups (use the deli turkey today or Monday). Mitchell: leftover Saturday chicken-and-rice, not deli. Dinner: burgers and fries. Microwave-defrost 2 lb of the ground beef and make 8 patties. Adults: bunless, with cheese and avocado, plus roasted broccoli. Boys: buns and frozen fries. Mitchell: a chicken breast or leftover Saturday chicken-and-rice, plus fries and broccoli (no ground beef). Save the extra 1 lb of ground beef for a later meal. After shopping: Boston butt in the slow cooker overnight, or first thing Monday morning.</p>
+    </article>
 
-<h2>Defrost</h2>
-<ul>
-<li>Same-day only. No turkey to thaw.</li>
-<li>Sunday chicken: microwave-defrost, then bake right away.</li>
-<li>Tuesday sirloin and Saturday filets: sealed bag in cold water, then cook.</li>
-<li>Friday backup: microwave-defrost the reserved pork or a chicken breast if needed.</li>
-</ul>
+    <article class="day">
+      <h3>Monday</h3>
+      <p>Lunch: finish the deli turkey (Mitchell: leftover chicken, or bake a breast if needed). Dinner at the usual time: pulled pork bowls with veg; rice or potatoes for the boys. Freeze half the pork for later in the week.</p>
+    </article>
 
-<h2>Leftovers</h2>
-<p>Finish the deli turkey by Monday. Sunday's baked chicken covers lunches and Wednesday night. Freeze half the pulled pork for Friday's backup. Friday assumes some leftovers come home from the parents' house.</p>
+    <article class="day">
+      <h3>Tuesday</h3>
+      <p>Lesh packed lunch (pork or chicken, veg, fruit, a boiled egg). Dinner: prime sirloin on the Blackstone with veg; potatoes or rice for the boys. Defrost the steak the same day in cold water.</p>
+    </article>
 
-<h2>This week's deals (H-E-B ad Nov 18–26)</h2>
-<p class="n">Prices from third-party ad roundups; confirm in store or in the app.</p>
-<ul>
-<li>Boston butt $1.47/lb — buy about 8 lb, cook half Monday, freeze half</li>
-<li>Sweet potatoes $1 per 8 lb bag — for the casserole we are taking on Thursday</li>
-<li>Spanish onions and apples $0.77</li>
-<li>Skipping the turkey deal and the free turkey with spiral ham: dinner Thursday is at the parents' house, and they are cooking the rest of the meal</li>
-</ul>
+    <article class="day">
+      <h3>Wednesday (leftover night)</h3>
+      <p>Leftover chicken and pork with veg; rice or potatoes for the boys. Evening: make the sweet potato casserole (half pecan topping, half marshmallows), and roast the rest of the sweet potatoes for boy sides.</p>
+    </article>
 
-<h2>Grocery list: H-E-B Cross Creek Ranch (one trip, Sunday afternoon)</h2>
-<ul>
-<li><b>Meat:</b> Boston butt, about 8 lb. No turkey, and no extra chicken or beef.</li>
-<li><b>Produce:</b> sweet potatoes (8 lb bag); bananas, 2 bunches; apples (~4 lb); Spanish onions, a small bag (2 already at home)</li>
-<li><b>Dairy:</b> eggs, 3 dozen; liquid egg whites, 32 oz; 1% milk, 1 gallon; string cheese, 1 pack</li>
-<li><b>Pantry:</b> avocado oil; jasmine rice; table syrup, small; brown sugar, small bag; pecans, 8 oz (casserole topping)</li>
-</ul>
-<p class="n">Skip: turkey, chicken, beef, cheese, yogurt, cottage cheese, butter, potatoes, green beans, cauliflower, cranberries, stuffing, rolls, broth, slaw, and extra tortillas or bread.</p>
+    <article class="day">
+      <h3>Thursday – Thanksgiving</h3>
+      <p>Light breakfast and a light lunch at home. Dinner at the parents’ house; they cook most of the food. Bring the sweet potato casserole (reheat at 350°F for 20–25 minutes).</p>
+    </article>
+
+    <article class="day">
+      <h3>Friday</h3>
+      <p>Dinner from leftovers brought home from the parents’ house. Backup: reheated pulled pork and frozen veg (boys can add rice or mac and cheese). If that’s short, chicken patties; Mitchell gets leftover pork or a chicken breast.</p>
+    </article>
+
+    <article class="day">
+      <h3>Saturday</h3>
+      <p>Filet night (all 8 filets). Same-day cold-water defrost. Veg for the adults; leftover frozen fries, oven fries, or hash browns for the boys.</p>
+    </article>
+
+    <div class="note">
+      <p><b>Breakfast:</b> eggs and egg whites, Greek yogurt with berries, cottage cheese, or protein pancakes. Kodiak tip: mix half Kodiak and half all-purpose flour, then add a spoon of sugar, vanilla, a pinch of salt, milk, an egg, and a little melted butter. <b>Snacks:</b> string cheese, yogurt, cottage cheese, fruit with peanut butter, hard-boiled eggs, protein bars.</p>
+    </div>
+  </section>
+
+  <section class="panel" role="tabpanel" id="panel-shopping" aria-labelledby="tab-shopping" hidden>
+    <h2>H-E-B list (store order)</h2>
+    <p class="n">One trip, Sunday afternoon, H-E-B Cross Creek Ranch. The list follows the order you walk the store. Checks stay on this phone until you clear them.</p>
+    <ul class="shop" id="shop-list">
+      <li><input type="checkbox" id="item-apples"><label for="item-apples">Sale apples</label></li>
+      <li><input type="checkbox" id="item-bananas"><label for="item-bananas">2 bunches of bananas</label></li>
+      <li><input type="checkbox" id="item-tomato"><label for="item-tomato">Tomato (optional, for burgers)</label></li>
+      <li><input type="checkbox" id="item-sweet-potatoes"><label for="item-sweet-potatoes">Sweet potatoes, 8 lb bag (for Thursday’s casserole; roast the rest for boy sides)</label></li>
+      <li><input type="checkbox" id="item-onions"><label for="item-onions">Onions</label></li>
+      <li><input type="checkbox" id="item-butt"><label for="item-butt">About 8 lb of Boston butt (freeze half)</label></li>
+      <li><input type="checkbox" id="item-cheese"><label for="item-cheese">String cheese and sliced cheese</label></li>
+      <li><input type="checkbox" id="item-buns"><label for="item-buns">Burger buns</label></li>
+      <li><input type="checkbox" id="item-milk"><label for="item-milk">A gallon of milk</label></li>
+      <li><input type="checkbox" id="item-eggs"><label for="item-eggs">3 dozen eggs and a 32 oz carton of egg whites</label></li>
+      <li><input type="checkbox" id="item-turkey"><label for="item-turkey">A 12–14 lb frozen turkey, if the price is right (optional; freeze for later — do not thaw this week)</label></li>
+      <li><input type="checkbox" id="item-fries"><label for="item-fries">Frozen fries</label></li>
+      <li><input type="checkbox" id="item-pantry"><label for="item-pantry">Jasmine rice, syrup, and avocado oil</label></li>
+      <li><input type="checkbox" id="item-baking"><label for="item-baking">Brown sugar, pecans, and marshmallows (casserole topping: half pecan, half marshmallow)</label></li>
+      <li><input type="checkbox" id="item-water"><label for="item-water">Distilled water</label></li>
+      <li><input type="checkbox" id="item-plates"><label for="item-plates">Paper plates</label></li>
+    </ul>
+    <div class="actions">
+      <button type="button" id="clear-checks">Clear checks</button>
+    </div>
+    <p class="n">You already have yogurt, cottage cheese, butter, regular potatoes, broccoli, and an avocado at home. The optional turkey goes straight to the outside freezer.</p>
+  </section>
+
+  <section class="panel" role="tabpanel" id="panel-prep" aria-labelledby="tab-prep" hidden>
+    <h2>Sweet potato casserole (Wednesday evening)</h2>
+    <p>Filling: 4–5 lb sweet potatoes, baked or boiled until soft and mashed, plus 4 Tbsp melted butter, ⅓ cup brown sugar, ¼ cup milk, 2 beaten eggs, 1 tsp vanilla, ½ tsp cinnamon, and a pinch of salt. Spread in a buttered 9×13.</p>
+    <p>Topping, half and half: on one half of the pan, a pecan streusel of ½ cup chopped pecans, ⅓ cup flour, ⅓ cup brown sugar, and 3 Tbsp cold butter, mixed to crumbs. On the other half, mini marshmallows — add those for the last 5–10 minutes so they toast, not burn. Bake the casserole at 350°F for 25–30 minutes until golden and hot. Cool, cover, and refrigerate. Thursday: reheat at 350°F for 20–25 minutes. Roast the rest of the 8 lb bag for boy sides.</p>
+
+    <h2>Meal prep (Sunday evening)</h2>
+    <ul>
+      <li>Microwave-defrost 2 lb ground beef and cook burgers for dinner; roast the broccoli with them. Save the extra 1 lb of beef.</li>
+      <li>For Mitchell, cook a chicken breast (or serve leftover Saturday chicken-and-rice) instead of a burger.</li>
+      <li>Slow-cook the Boston butt overnight, or start it first thing Monday morning, so it is ready for Monday dinner at the usual time.</li>
+      <li>If you have energy left, bake 3–4 lb chicken breasts at 425°F for lunches later in the week (not for Sunday dinner).</li>
+      <li>Hard-boil a dozen eggs.</li>
+      <li>Cut fruit, portion cottage cheese, stock a snack bin.</li>
+      <li>If you buy the optional turkey, put it straight into the outside freezer.</li>
+      <li>Wednesday night: make the sweet potato casserole; roast leftover sweet potatoes.</li>
+    </ul>
+
+    <h2>Defrost</h2>
+    <ul>
+      <li>Same-day only. The optional turkey is for later — do not thaw it this week. When you cook it later, thaw it in the fridge for about three days, or in cold water for about 6–7 hours, changing the water every 30 minutes. Do not microwave a whole turkey.</li>
+      <li>Sunday ground beef: microwave-defrost, then cook right away.</li>
+      <li>Chicken for lunches: microwave-defrost, then bake right away.</li>
+      <li>Tuesday sirloin and Saturday filets: sealed bag in cold water, then cook.</li>
+      <li>Friday backup: microwave-defrost the reserved pork or a chicken breast if needed.</li>
+    </ul>
+
+    <h2>Leftovers</h2>
+    <p>Finish the deli turkey by Monday. Sunday’s burgers use 2 lb of the ground beef; the extra 1 lb stays for a later meal. Bake chicken this week as a lunch protein, not Sunday dinner; that chicken also covers leftover night on Wednesday. Freeze half the pulled pork for Friday’s backup. Friday assumes some leftovers come home from the parents’ house.</p>
+  </section>
+</div>
+
+<script>
+(function () {
+  var TAB_KEY = "rk-tab";
+  var CHECK_KEY = "rk-shop-2026-11-22";
+  var ids = ["menu", "shopping", "prep"];
+  var alias = { shop: "shopping", list: "shopping", recipes: "prep", "prep-recipes": "prep" };
+  var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
+  var list = document.getElementById("shop-list");
+
+  function valid(tab) {
+    return ids.indexOf(tab) !== -1 ? tab : null;
+  }
+  function fromHash() {
+    var h = (location.hash || "").replace(/^#/, "").toLowerCase();
+    return valid(alias[h] || h);
+  }
+  function show(tab, writeHash) {
+    tab = valid(tab) || "menu";
+    ids.forEach(function (id) {
+      var panel = document.getElementById("panel-" + id);
+      var on = id === tab;
+      panel.classList.toggle("is-on", on);
+      if (on) panel.removeAttribute("hidden");
+      else panel.setAttribute("hidden", "");
+    });
+    buttons.forEach(function (btn) {
+      var on = btn.getAttribute("data-tab") === tab;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+      btn.tabIndex = on ? 0 : -1;
+    });
+    try { localStorage.setItem(TAB_KEY, tab); } catch (e) {}
+    if (writeHash) {
+      var hash = "#" + tab;
+      if (location.hash !== hash) history.replaceState(null, "", hash);
+    }
+  }
+  function start() {
+    var saved = null;
+    try { saved = localStorage.getItem(TAB_KEY); } catch (e) {}
+    show(fromHash() || valid(saved) || "menu", true);
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      show(btn.getAttribute("data-tab"), true);
+    });
+  });
+  document.querySelector("nav.tabs").addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "Home" && e.key !== "End") return;
+    e.preventDefault();
+    var i = buttons.findIndex(function (b) { return b.getAttribute("aria-selected") === "true"; });
+    if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = buttons.length - 1;
+    else i = (i + (e.key === "ArrowRight" ? 1 : -1) + buttons.length) % buttons.length;
+    buttons[i].focus();
+    show(buttons[i].getAttribute("data-tab"), true);
+  });
+  window.addEventListener("hashchange", function () {
+    var tab = fromHash();
+    if (tab) show(tab, false);
+  });
+
+  function applyChecks(idsChecked) {
+    list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      cb.checked = idsChecked.indexOf(cb.id) !== -1;
+      cb.closest("li").classList.toggle("is-done", cb.checked);
+    });
+  }
+  function saveChecks() {
+    var checked = [];
+    list.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+      checked.push(cb.id);
+    });
+    try { localStorage.setItem(CHECK_KEY, JSON.stringify(checked)); } catch (e) {}
+  }
+  function loadChecks() {
+    var checked = [];
+    try { checked = JSON.parse(localStorage.getItem(CHECK_KEY) || "[]"); } catch (e) {}
+    if (!Array.isArray(checked)) checked = [];
+    applyChecks(checked);
+  }
+  list.addEventListener("change", function (e) {
+    if (e.target && e.target.type === "checkbox") {
+      e.target.closest("li").classList.toggle("is-done", e.target.checked);
+      saveChecks();
+    }
+  });
+  document.getElementById("clear-checks").addEventListener("click", function () {
+    applyChecks([]);
+    saveChecks();
+  });
+
+  loadChecks();
+  start();
+})();
+</script>
 </body>
 </html>
